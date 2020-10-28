@@ -1,11 +1,17 @@
+'''
+Dateien umbenennen, löschen, erstellen, verschieben.
+Mit File("name der datei", "path der datei") ein Datei Objekt erstellen.
+'''
 
 import os 
-class File():
+
+class File:
 
     def init(self, name, path):
 
         self.name = name
         self.path = path
+        self.full_path = f"{self.path}\{self.name}"
 
     def write(self, data):
 
@@ -32,6 +38,15 @@ class File():
         except Exception as e:
             print(e)
             pass
+        
+    def remove(self):
+    
+        try:
+            os.remove(self.full_path)
+    
+        except Exception as e:
+            
+            print(e)
 
 
 def rename_raw(path, name, new_name):
@@ -47,12 +62,17 @@ def rename_raw(path, name, new_name):
 def create(name, path):
 
     try:
-        open(f"{path}{name}")
+        open(f"{path}{name}", "w+")
 
     except Exception as e:
         print(e)
+        
+        
+def remove(path):
+    
+    try:
+        os.remove(path)
 
-
-file_test = File("test.txt", r"")
-
-file_test.rename("test2.txt")
+    except Exception as e:
+        
+        print(e)
