@@ -8,6 +8,7 @@ lg = logging.getLogger("Server")
 lg.info(f"Starting socket server")
 
 lg_errors = logging.getLogger("errors")
+logging.getLogger("asyncio").disabled = True
 
 
 class InvalidPortError(Exception):
@@ -59,7 +60,8 @@ class Server:
         #Override this method here to change input handling
         async with aiofiles.open("data.txt", "w+") as f:
 
-            await f.write(data)
+            write_data = addr[0] + " - " + str(addr[1]) + " - " + data.decode()
+            await f.write(data.decode())
             await f.close()
 
         pass
@@ -91,7 +93,7 @@ class Server:
     async def start(self):
 
         while True:
-            global client
+            global client, addr
             client, addr = self.s.accept()
 
             lg.info(f"Accepted connection from {addr[0]}:{addr[1]}")
@@ -101,34 +103,31 @@ class Server:
                 try:
 
                     data = client.recv(1024)
+                    if not await self.check_data(data):
+                        break
                     lg.info(f"Received data from {addr[0]}:{addr[1]} - {data.decode()}")
 
                     try:
-                        if not await self.check_data(data):
-
-                            break
-
                         lg.info(f"Message received from {addr[0]}:{addr[1]} is {len(data.decode())} characters long")
-                        #await self.handle_data(data)
+                        await self.handle_data(data)
 
-                        #await self.reply("Closed server".encode())
+                        await self.reply("Closed server".encode())
 
                         #client.close()
-                        #lg.info(f"Closed connection with {addr[0]}:{addr[1]}")
-                        self.s.close()
+                        lg.info(f"Closed connection with {addr[0]}:{addr[1]}")
+                        #self.s.close()
 
                     except Exception as e:
 
                         lg.error(e)
-                        asyncio.sleep(1)
+                        await asyncio.sleep(1)
 
                 except Exception as e:
 
                     lg.error(e)
-                    asyncio.sleep(1)
+                    await asyncio.sleep(1)
 
 
-
-
+Server("127.0.0.1", 5000)
 
 

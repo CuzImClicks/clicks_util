@@ -1,10 +1,20 @@
 import logging
 import socket
-from socket_server.util import *
-from socket_server.errors import *
 import asyncio
+from clicks_util import logger
 
 lg = logging.getLogger("Client")
+logging.getLogger("asyncio").disabled = True
+
+
+class InvalidPortError(Exception):
+
+    pass
+
+
+class PortAlreadyUsedError(Exception):
+
+    pass
 
 
 class Client:
@@ -21,6 +31,8 @@ class Client:
 
         asyncio.run(self.create_socket())
         asyncio.run(self.connect("127.0.0.1", 5000))
+        asyncio.run(self.send("Test"))
+        #asyncio.run(self.recv())
 
     async def create_socket(self):
 
@@ -53,6 +65,16 @@ class Client:
 
                 lg.error(f"Connection with {target_ip}:{target_port} was refused")
 
+    async def recv(self):
+
+        try:
+            data = self.s.recv(1024)
+            lg.info(f"Message received from {self.target_ip}:{self.target_port} is {len(data.decode())} characters long")
+
+        except Exception as e:
+
+            lg.error(e)
+
     async def send(self, data):
 
         msg = "Test"
@@ -65,7 +87,7 @@ class Client:
 
 
 
-
+Client("127.0.0.1", 5001)
 
 
 

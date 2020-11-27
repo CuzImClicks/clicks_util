@@ -4,7 +4,3 @@ from asyncio import run
 import logging
 
 logging.getLogger("asyncio").disabled = True
-Client("127.0.0.1", 5001)
-Server("127.0.0.1", 5000)
-
-
