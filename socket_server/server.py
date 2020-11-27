@@ -1,13 +1,23 @@
 import socket
-import logger
-import logging
 import asyncio
-from socket_server.errors import *
-import aiohttp
+import logging
 import aiofiles
+from clicks_util import logger
 
 lg = logging.getLogger("Server")
 lg.info(f"Starting socket server")
+
+lg_errors = logging.getLogger("errors")
+
+
+class InvalidPortError(Exception):
+
+    pass
+
+
+class PortAlreadyUsedError(Exception):
+
+    pass
 
 
 class Server:
@@ -16,13 +26,14 @@ class Server:
 
         self.ip = ip
         self.port = port
-        if not asyncio.run(self.port_check()) == True:
+        lg.info(f"Async Socket Server - v1 Beta")
+        if not asyncio.run(self.port_check()):
 
             raise InvalidPortError
-        asyncio.run(self.run())
+        asyncio.run(self.create_socket())
+        asyncio.run(self.start())
 
     async def port_check(self) -> bool:
-
         try:
             int(self.port)
             return True
@@ -115,12 +126,6 @@ class Server:
 
                     lg.error(e)
                     asyncio.sleep(1)
-
-    async def run(self):
-
-        await self.port_check()
-        await self.create_socket()
-        await self.start()
 
 
 

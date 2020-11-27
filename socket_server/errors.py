@@ -1,6 +1,6 @@
 import logging
 
-lg = logging.getLogger("errors")
+lg_errors = logging.getLogger("errors")
 
 
 class InvalidPortError(Exception):
