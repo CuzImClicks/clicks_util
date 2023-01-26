@@ -1,9 +1,0 @@
-
-__pycache__/file_io.cpython-38.pyc
-__pycache__/heron.cpython-38.pyc
-__pycache__/logger.cpython-38.pyc
-__pycache__/ansi_util.cpython-38.pyc
-testing.py
-*.pyc
-*.iml
-*.xml
